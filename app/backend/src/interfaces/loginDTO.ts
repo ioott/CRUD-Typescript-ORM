@@ -1,6 +1,4 @@
 interface LoginDto {
-  username: string;
-  role: string;
   email: string;
   password: string;
 }
