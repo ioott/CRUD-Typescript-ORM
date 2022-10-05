@@ -2,13 +2,11 @@ import * as sinon from 'sinon';
 import * as chai from 'chai';
 // @ts-ignore
 import chaiHttp = require('chai-http');
-
+import { StatusCodes } from 'http-status-codes';
 import { app } from '../app';
 import UserModel from '../database/models/UserModel';
-
 import { Response } from 'superagent';
 import LoginDTO from '../interfaces/loginDTO';
-import { response } from 'express';
 
 chai.use(chaiHttp);
 
@@ -17,9 +15,12 @@ const { expect } = chai;
 describe('testa a rota /login', () =>
 {
   let chaiHttpResponse: Response;
-  const userMock: LoginDTO = {email: 'test@test.com', password: '123456'};
+  const userMock: LoginDTO = {
+    email: 'admin@admin.com',
+    password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
+  };
 
-  before(async () => {
+  before(() => {
     sinon
       .stub(UserModel, 'findOne')
       .resolves({ ...userMock } as UserModel);
@@ -29,13 +30,14 @@ describe('testa a rota /login', () =>
     sinon.restore();
   })
 
-  it('Deve fazer o login com sucesso e redirecionar o usuário para a tela de jogos', async () => {
+  it('Deve fazer o login com sucesso e redirecionar o usuário para a tela de jogos', async () =>
+  {
     chaiHttpResponse = await chai
       .request(app)
       .post('/login')
-      .send(userMock);
+      .send({ 'email': 'admin@admin.com', "password": "secret_admin" });
 
-    expect(chaiHttpResponse.status).to.equal(200);
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
     expect(chaiHttpResponse.header).to.hasOwnProperty('token');
   });
 
@@ -44,9 +46,9 @@ describe('testa a rota /login', () =>
     chaiHttpResponse = await chai
       .request(app)
       .post('/login')
-      .send({email: '', password: '123456'});
+      .send({ password: 'secret_admin'});
 
-    expect(chaiHttpResponse.status).to.equal(400);
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.BAD_REQUEST);
   });
 
   it('Não deve permitir fazer login sem uma senha válida', async () =>
@@ -54,9 +56,9 @@ describe('testa a rota /login', () =>
     chaiHttpResponse = await chai
       .request(app)
       .post('/login')
-      .send({email: 'test@test.com', password: ''});
+      .send({ email: 'admin@admin.com' });
 
-    expect(chaiHttpResponse.status).to.equal(400);
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.BAD_REQUEST);
   });
 
 });

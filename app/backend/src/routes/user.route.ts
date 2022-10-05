@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import UserService from '../services/UserService';
 import UserController from '../controllers/UserController';
 
@@ -7,6 +7,11 @@ const router = Router();
 const userService = new UserService();
 const userController = new UserController(userService);
 
-router.post('/login', (req: Request, res: Response) => userController.login(req, res));
+// router.get('/login/validate', (req: Request, res: Response) => userController.validate(req, res));
+router.post(
+  '/login',
+  // (req: Request, res: Response, next: NextFunction) => { console.log('vania'); next(); },
+  (req: Request, res: Response, next: NextFunction) => userController.login(req, res, next),
+);
 
 export default router;
