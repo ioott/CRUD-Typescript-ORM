@@ -9,14 +9,14 @@ export default class UserController {
     try {
       const token = await this.service.login(req.body);
       return res.status(StatusCodes.OK).json(token);
-    } catch (err) {
-      console.log(err);
-      next(err);
+    } catch (e) {
+      console.log(e);
+      next(e);
     }
   }
 
-  // async validate(req: Request, res: Response) {
-  //   const role = await this.service.validate(req.params.authorization);
-  //   res.status(StatusCodes.OK).json(role);
-  // }
+  async validate(req: Request, res: Response) {
+    const role = await this.service.validate(req.headers.authorization);
+    res.status(StatusCodes.OK).json(role);
+  }
 }

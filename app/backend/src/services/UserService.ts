@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import IUserService from '../interfaces/IUserService';
 import User from '../database/models/UserModel';
 import LoginDto from '../interfaces/loginDTO';
-import { createToken, validateToken } from '../helpers/token';
+import Token from '../helpers/token';
 import HttpException from '../middlewares/HttpException';
 
 export default class UserService implements IUserService {
@@ -20,24 +20,33 @@ export default class UserService implements IUserService {
     });
 
     if (!userOk) {
-      throw new HttpException(StatusCodes.UNAUTHORIZED, 'incorrect email or password');
+      throw new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect email or password');
+    }
+    if (!bcrypt.compareSync(user.password, userOk.password)) {
+      throw new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect email or password');
     }
 
-    if (!bcrypt.compareSync(user.password, userOk.password)) {
-      throw new HttpException(StatusCodes.UNAUTHORIZED, 'incorrect email or password');
-    }
     const payload = userOk.email;
-    const token = await createToken({ payload });
+    const tokenHelper = new Token();
+    const token = tokenHelper.createToken({ payload });
     return { token };
   }
 
-  // public async validate(authorization: string): Promise<Record<string, string>> {
-  //   await validateToken(authorization);
-  //   const userOk = await this.db.findOne({
-  //     attributes: ['email', 'password'],
-  //     where: { email: user.email },
-  //   });
-  // }
+  public async validate(authorization: string | undefined):
+  Promise<Record<string, string>> {
+    const tokenHelper = new Token();
+    const payload = tokenHelper.validateToken(authorization);
+
+    const user = await this.db.findOne({
+      attributes: ['role'],
+      where: { email: payload },
+    });
+    if (!user) {
+      throw new HttpException(StatusCodes.BAD_REQUEST, 'user not found');
+    }
+
+    return { role: user.role };
+  }
 
   // public async create(user: User): Promise<Record<string, string>> {
   //   await UserValidation.validateAsync(user);

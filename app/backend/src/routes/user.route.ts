@@ -7,10 +7,9 @@ const router = Router();
 const userService = new UserService();
 const userController = new UserController(userService);
 
-// router.get('/login/validate', (req: Request, res: Response) => userController.validate(req, res));
+router.get('/login/validate', (req: Request, res: Response) => userController.validate(req, res));
 router.post(
   '/login',
-  // (req: Request, res: Response, next: NextFunction) => { console.log('vania'); next(); },
   (req: Request, res: Response, next: NextFunction) => userController.login(req, res, next),
 );
 
