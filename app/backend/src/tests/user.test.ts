@@ -21,8 +21,7 @@ describe('testa a rota /login', () =>
   };
 
   before(() => {
-    sinon
-      .stub(UserModel, 'findOne')
+    sinon.stub(UserModel, 'findOne')
       .resolves({ ...userMock } as UserModel);
   });
 

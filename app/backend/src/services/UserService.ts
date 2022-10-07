@@ -18,7 +18,6 @@ export default class UserService implements IUserService {
       attributes: ['email', 'password'],
       where: { email: user.email },
     });
-
     if (!userOk) {
       throw new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect email or password');
     }

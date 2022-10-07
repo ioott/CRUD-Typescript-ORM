@@ -1,4 +1,4 @@
-import Sinon, * as sinon from 'sinon';
+import * as sinon from 'sinon';
 import * as chai from 'chai';
 // @ts-ignore
 import * as chaiHttp  from 'chai-http';
@@ -35,7 +35,7 @@ describe('testa a rota /teams', () =>
   });
 });
 
-describe('Testa a rota /teams/id'), () =>
+describe('Testa a rota /teams/id', () =>
 {
   let chaiHttpResponse: Response;
   const teamMock: TeamDTO = { id: 1, teamName: 'Avaí/Kindermann' };
@@ -48,7 +48,7 @@ describe('Testa a rota /teams/id'), () =>
     sinon.restore();
   })
 
-  it('Deve retornar um time específico e um status 200'), async () =>
+  it('Deve retornar um time específico e um status 200', async () =>
   {
     chaiHttpResponse = await chai
       .request(app)
@@ -56,5 +56,5 @@ describe('Testa a rota /teams/id'), () =>
       .send({ id: '1' });
     expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
     expect(chaiHttpResponse.body).to.deep.equal(teamMock);
-  }
-};
+  });
+});
