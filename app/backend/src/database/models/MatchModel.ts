@@ -6,8 +6,8 @@ class Match extends Model {
   id!: number;
   homeTeam!: number;
   homeTeamGoals!: number;
-  awayTeam: number;
-  awayTeamGoals: number;
+  awayTeam!: number;
+  awayTeamGoals!: number;
   inProgress!: boolean;
 }
 
