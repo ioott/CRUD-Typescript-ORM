@@ -1,4 +1,4 @@
-import * as sinon from 'sinon';
+import Sinon, * as sinon from 'sinon';
 import * as chai from 'chai';
 // @ts-ignore
 import * as chaiHttp  from 'chai-http';
@@ -12,21 +12,16 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('testa a rota /team', () =>
+describe('testa a rota /teams', () =>
 {
   let chaiHttpResponse: Response;
-  const teamMock: TeamDTO[] = [{
-    id: 1,
-    teamName: 'Avaí/Kindermann',
-  }];
+  const teamsMock: TeamDTO[] = [{ id: 1, teamName: 'Avaí/Kindermann' }];
 
   before(() => {
-    sinon
-      .stub(TeamModel, 'findAll')
-      .resolves(teamMock as TeamModel[]);
+    sinon.stub(TeamModel, 'findAll')
+      .resolves([...teamsMock] as TeamModel[]);
   });
-
-  after(()=>{
+  after(() => {
     sinon.restore();
   })
 
@@ -34,30 +29,32 @@ describe('testa a rota /team', () =>
   {
     chaiHttpResponse = await chai
       .request(app)
-      .get('/team');
-
+      .get('/teams');
     expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
-    expect(chaiHttpResponse.body).to.equal(teamMock);
+    expect(chaiHttpResponse.body).to.deep.equal(teamsMock);
   });
-
-//   it('Não deve permitir fazer login sem um e-mail válido', async () =>
-//   {
-//     chaiHttpResponse = await chai
-//       .request(app)
-//       .post('/login')
-//       .send({ password: 'secret_admin'});
-
-//     expect(chaiHttpResponse.status).to.equal(StatusCodes.BAD_REQUEST);
-//   });
-
-//   it('Não deve permitir fazer login sem uma senha válida', async () =>
-//   {
-//     chaiHttpResponse = await chai
-//       .request(app)
-//       .post('/login')
-//       .send({ email: 'admin@admin.com' });
-
-//     expect(chaiHttpResponse.status).to.equal(StatusCodes.BAD_REQUEST);
-//   });
-
 });
+
+describe('Testa a rota /teams/id'), () =>
+{
+  let chaiHttpResponse: Response;
+  const teamMock: TeamDTO = { id: 1, teamName: 'Avaí/Kindermann' };
+
+  before(() => {
+    sinon.stub(TeamModel, 'findOne')
+      .resolves({ ...teamMock } as TeamModel);
+  });
+  after(() => {
+    sinon.restore();
+  })
+
+  it('Deve retornar um time específico e um status 200'), async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .get('/teams/id')
+      .send({ id: '1' });
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
+    expect(chaiHttpResponse.body).to.deep.equal(teamMock);
+  }
+};
