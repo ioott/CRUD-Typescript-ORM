@@ -1,5 +1,6 @@
 import * as express from 'express';
-import router from './routes/user.route';
+import userRouter from './routes/user.route';
+import teamRouter from './routes/team.route';
 import httpErrorMiddleware from './middlewares/Http.error.middleware';
 
 class App {
@@ -24,7 +25,8 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
-    this.app.use('/', router);
+    this.app.use('/', userRouter);
+    this.app.use('/', teamRouter);
     this.app.use(httpErrorMiddleware);
   }
 

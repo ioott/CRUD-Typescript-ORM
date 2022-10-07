@@ -1,45 +1,44 @@
-// import * as sinon from 'sinon';
-// import * as chai from 'chai';
-// // @ts-ignore
-// import * as chaiHttp  from 'chai-http';
-// import { StatusCodes } from 'http-status-codes';
-// import { app } from '../app';
-// import UserModel from '../database/models/UserModel';
-// import { Response } from 'superagent';
-// import LoginDTO from '../interfaces/loginDTO';
+import * as sinon from 'sinon';
+import * as chai from 'chai';
+// @ts-ignore
+import * as chaiHttp  from 'chai-http';
+import { StatusCodes } from 'http-status-codes';
+import { app } from '../app';
+import TeamModel from '../database/models/TeamModel';
+import { Response } from 'superagent';
+import TeamDTO from '../interfaces/teamDTO';
 
-// chai.use(chaiHttp);
+chai.use(chaiHttp);
 
-// const { expect } = chai;
+const { expect } = chai;
 
-// describe('testa a rota /login', () =>
-// {
-//   let chaiHttpResponse: Response;
-//   const userMock: LoginDTO = {
-//     email: 'admin@admin.com',
-//     password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
-//   };
+describe('testa a rota /team', () =>
+{
+  let chaiHttpResponse: Response;
+  const teamMock: TeamDTO[] = [{
+    id: 1,
+    teamName: 'Avaí/Kindermann',
+  }];
 
-//   before(() => {
-//     sinon
-//       .stub(UserModel, 'findOne')
-//       .resolves({ ...userMock } as UserModel);
-//   });
+  before(() => {
+    sinon
+      .stub(TeamModel, 'findAll')
+      .resolves(teamMock as TeamModel[]);
+  });
 
-//   after(()=>{
-//     sinon.restore();
-//   })
+  after(()=>{
+    sinon.restore();
+  })
 
-//   it('Deve fazer o login com sucesso e redirecionar o usuário para a tela de jogos', async () =>
-//   {
-//     chaiHttpResponse = await chai
-//       .request(app)
-//       .post('/login')
-//       .send({ 'email': 'admin@admin.com', "password": "secret_admin" });
+  it('Retorna todos os times e um status 200', async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .get('/team');
 
-//     expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
-//     expect(chaiHttpResponse.header).to.hasOwnProperty('token');
-//   });
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
+    expect(chaiHttpResponse.body).to.equal(teamMock);
+  });
 
 //   it('Não deve permitir fazer login sem um e-mail válido', async () =>
 //   {
@@ -61,4 +60,4 @@
 //     expect(chaiHttpResponse.status).to.equal(StatusCodes.BAD_REQUEST);
 //   });
 
-// });
+});
