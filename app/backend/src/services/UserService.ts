@@ -46,11 +46,4 @@ export default class UserService implements IUserService {
 
     return { role: user.role };
   }
-
-  // public async create(user: User): Promise<Record<string, string>> {
-  //   await UserValidation.validateAsync(user);
-  //   await this.db.create({ ...user });
-  //   const token = await createToken(user);
-  //   return { token };
-  // }
 }

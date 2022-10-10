@@ -22,4 +22,9 @@ export default class MatchService implements IMatchService {
     });
     return matches;
   }
+
+  async create(dataNewMatch: MatchModel): Promise<MatchModel> {
+    const newMatch = await this.db.create({ ...dataNewMatch });
+    return newMatch;
+  }
 }
