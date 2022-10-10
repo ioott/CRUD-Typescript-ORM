@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('testa a rota /teams', () =>
+describe('testa a rota get /teams', () =>
 {
   let chaiHttpResponse: Response;
   const teamsMock: TeamDTO[] = [{ id: 1, teamName: 'Avaí/Kindermann' }];
@@ -35,7 +35,7 @@ describe('testa a rota /teams', () =>
   });
 });
 
-describe('Testa a rota /teams/id', () =>
+describe('Testa a rota get /teams/id', () =>
 {
   let chaiHttpResponse: Response;
   const teamMock: TeamDTO = { id: 1, teamName: 'Avaí/Kindermann' };

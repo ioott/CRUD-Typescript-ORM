@@ -34,7 +34,10 @@ describe('testa a rota /login', () =>
     chaiHttpResponse = await chai
       .request(app)
       .post('/login')
-      .send({ 'email': 'admin@admin.com', "password": "secret_admin" });
+      .send({
+        'email': 'admin@admin.com',
+        "password": "secret_admin"
+      });
 
     expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
     expect(chaiHttpResponse.header).to.hasOwnProperty('token');

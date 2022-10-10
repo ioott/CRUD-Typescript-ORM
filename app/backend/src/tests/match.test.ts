@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('testa a rota /matches', () =>
+describe('testa a rota get /matches', () =>
 {
   let chaiHttpResponse: Response;
   const matchesMock: MatchDTO[] = [{
@@ -40,5 +40,21 @@ describe('testa a rota /matches', () =>
     expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
     expect(chaiHttpResponse.body).to.deep.equal(matchesMock);
   });
-});
 
+  it('Verifica se é possível cadastrar nova partida em andamento, retorna os dados da partida e um status 201', async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/matches')
+      .send({
+        'homeTeam': 16,
+        'awayTeam': 2,
+        'homeTeamGoals': 8,
+        'awayTeamGoals': 2,
+        'inProgress': true
+      });
+
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.CREATED);
+    expect(chaiHttpResponse.body).to.deep.equal(matchesMock);
+  });
+});
