@@ -40,6 +40,28 @@ describe('testa a rota get /matches', () =>
     expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
     expect(chaiHttpResponse.body).to.deep.equal(matchesMock);
   });
+});
+
+describe('testa a rota post /matches', () =>
+{
+  let chaiHttpResponse: Response;
+  const matchesMock: MatchDTO = {
+    id: 1,
+    homeTeam: 16,
+    homeTeamGoals: 1,
+    awayTeam: 8,
+    awayTeamGoals: 1,
+    inProgress: false,
+  };
+
+  before(() =>
+  {
+    sinon.stub(MatchModel, 'create')
+      .resolves({ ...matchesMock } as MatchModel);
+  });
+  after(() => {
+    sinon.restore();
+  })
 
   it('Verifica se é possível cadastrar nova partida em andamento, retorna os dados da partida e um status 201', async () =>
   {
@@ -47,6 +69,7 @@ describe('testa a rota get /matches', () =>
       .request(app)
       .post('/matches')
       .send({
+        'id': 1,
         'homeTeam': 16,
         'awayTeam': 2,
         'homeTeamGoals': 8,
