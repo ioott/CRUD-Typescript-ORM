@@ -27,4 +27,12 @@ export default class MatchService implements IMatchService {
     const newMatch = await this.db.create({ ...dataNewMatch });
     return newMatch;
   }
+
+  async update(id: number): Promise<Record<string, string>> {
+    await this.db.update(
+      { inProgress: false },
+      { where: { id } },
+    );
+    return { message: 'Finished' };
+  }
 }

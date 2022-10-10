@@ -14,4 +14,9 @@ export default class MatchController {
     const newMatch = await this.service.create(req.body);
     res.status(StatusCodes.CREATED).json(newMatch);
   }
+
+  async update(req: Request, res: Response) {
+    const changedOk = await this.service.update(Number(req.params.id));
+    res.status(StatusCodes.OK).json(changedOk);
+  }
 }

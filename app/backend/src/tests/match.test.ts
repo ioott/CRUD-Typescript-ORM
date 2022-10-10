@@ -80,4 +80,22 @@ describe('testa a rota post /matches', () =>
     expect(chaiHttpResponse.status).to.equal(StatusCodes.CREATED);
     expect(chaiHttpResponse.body).to.deep.equal(matchesMock);
   });
+
+  it('Verifica que não é possível cadastrar uma partida com times iguais.Caso haja uma tentativa, retorna um status 401', async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/matches')
+      .send({
+        'id': 1,
+        'homeTeam': 16,
+        'awayTeam': 16,
+        'homeTeamGoals': 8,
+        'awayTeamGoals': 2,
+        'inProgress': true
+      });
+
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.UNAUTHORIZED);
+    expect(chaiHttpResponse.body).to.equal(matchesMock);
+  });
 });
