@@ -32,7 +32,6 @@ class App {
     this.app.use('/', teamRouter);
     this.app.use('/', matchRouter);
 
-    
     this.app.use(httpErrorMiddleware);
   }
 

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import MatchService from '../services/MatchService';
 
@@ -10,9 +10,14 @@ export default class MatchController {
     res.status(StatusCodes.OK).json(matches);
   }
 
-  async create(req: Request, res: Response) {
-    const newMatch = await this.service.create(req.body);
-    res.status(StatusCodes.CREATED).json(newMatch);
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const newMatch = await this.service.create(req.body);
+      res.status(StatusCodes.CREATED).json(newMatch);
+    } catch (e) {
+      console.log(e);
+      next(e);
+    }
   }
 
   async update(req: Request, res: Response) {

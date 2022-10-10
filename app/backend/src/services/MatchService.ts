@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+import HttpException from '../middlewares/HttpException';
 import IMatchService from '../interfaces/IMatchService';
 import MatchModel from '../database/models/MatchModel';
 import Team from '../database/models/TeamModel';
@@ -24,6 +26,10 @@ export default class MatchService implements IMatchService {
   }
 
   async create(dataNewMatch: MatchModel): Promise<MatchModel> {
+    if (dataNewMatch.awayTeam === dataNewMatch.homeTeam) {
+      throw new HttpException(StatusCodes
+        .UNAUTHORIZED, 'It is not possible to create a match with two equal teams');
+    }
     const newMatch = await this.db.create({ ...dataNewMatch });
     return newMatch;
   }
