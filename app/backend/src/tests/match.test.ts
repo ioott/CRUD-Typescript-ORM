@@ -59,7 +59,8 @@ describe('testa a rota post /matches', () =>
     sinon.stub(MatchModel, 'create')
       .resolves({ ...matchesMock } as MatchModel);
   });
-  after(() => {
+  after(() =>
+  {
     sinon.restore();
   })
 
@@ -96,8 +97,28 @@ describe('testa a rota post /matches', () =>
       });
 
     expect(chaiHttpResponse.status).to.equal(StatusCodes.UNAUTHORIZED);
-    expect(chaiHttpResponse.body).to.equal({
+    expect(chaiHttpResponse.body).to.deep.equal({
       message: 'It is not possible to create a match with two equal teams'
     });
+
+    it('Verifica que não é possível cadastrar uma partida com um time que não existe na tabela teams. Caso haja uma tentativa, retorna um status 404', async () =>
+    {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .send({
+          'id': 1,
+          'homeTeam': 210,
+          'awayTeam': 16,
+          'homeTeamGoals': 8,
+          'awayTeamGoals': 2,
+          'inProgress': true
+        });
+
+      expect(chaiHttpResponse.status).to.equal(StatusCodes.NOT_FOUND);
+      expect(chaiHttpResponse.body).to.equal({
+        message: 'There is no team with such id!'
+      });
+    });
   });
-});
+})

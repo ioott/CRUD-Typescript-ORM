@@ -30,6 +30,18 @@ export default class MatchService implements IMatchService {
       throw new HttpException(StatusCodes
         .UNAUTHORIZED, 'It is not possible to create a match with two equal teams');
     }
+    const verifyAwayTeam = await this.db.findOne({
+      attributes: ['id'],
+      where: { id: dataNewMatch.awayTeam },
+    });
+    const verifyHomeTeam = await this.db.findOne({
+      attributes: ['id'],
+      where: { id: dataNewMatch.homeTeam },
+    });
+    if (!verifyAwayTeam || !verifyHomeTeam) {
+      throw new HttpException(StatusCodes
+        .NOT_FOUND, 'There is no team with such id!');
+    }
     const newMatch = await this.db.create({ ...dataNewMatch });
     return newMatch;
   }
