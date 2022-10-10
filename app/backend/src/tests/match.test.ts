@@ -81,7 +81,7 @@ describe('testa a rota post /matches', () =>
     expect(chaiHttpResponse.body).to.deep.equal(matchesMock);
   });
 
-  it('Verifica que não é possível cadastrar uma partida com times iguais.Caso haja uma tentativa, retorna um status 401', async () =>
+  it('Verifica que não é possível cadastrar uma partida com times iguais. Caso haja uma tentativa, retorna um status 401', async () =>
   {
     chaiHttpResponse = await chai
       .request(app)
@@ -96,6 +96,8 @@ describe('testa a rota post /matches', () =>
       });
 
     expect(chaiHttpResponse.status).to.equal(StatusCodes.UNAUTHORIZED);
-    expect(chaiHttpResponse.body).to.equal(matchesMock);
+    expect(chaiHttpResponse.body).to.equal({
+      message: 'It is not possible to create a match with two equal teams'
+    });
   });
 });
