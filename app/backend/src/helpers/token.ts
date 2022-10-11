@@ -37,7 +37,7 @@ class Token {
       const payload = jwt.verify(token, JWT_SECRET, this.jwtConfig);
       return Object.values(payload)[0];
     } catch (e) {
-      throw new HttpException(StatusCodes.UNAUTHORIZED, 'invalid token');
+      throw new HttpException(StatusCodes.UNAUTHORIZED, 'Token must be a valid token');
     }
   }
 }

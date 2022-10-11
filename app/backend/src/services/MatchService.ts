@@ -3,6 +3,7 @@ import HttpException from '../middlewares/HttpException';
 import IMatchService from '../interfaces/IMatchService';
 import MatchModel from '../database/models/MatchModel';
 import Team from '../database/models/TeamModel';
+import Token from '../helpers/token';
 
 export default class MatchService implements IMatchService {
   private db = MatchModel;
@@ -31,16 +32,13 @@ export default class MatchService implements IMatchService {
         .UNAUTHORIZED, 'It is not possible to create a match with two equal teams');
     }
     const verifyAwayTeam = await this.db.findOne({
-      attributes: ['id'],
-      where: { id: dataNewMatch.awayTeam },
+      attributes: ['id'], where: { id: dataNewMatch.awayTeam },
     });
     const verifyHomeTeam = await this.db.findOne({
-      attributes: ['id'],
-      where: { id: dataNewMatch.homeTeam },
+      attributes: ['id'], where: { id: dataNewMatch.homeTeam },
     });
     if (!verifyAwayTeam || !verifyHomeTeam) {
-      throw new HttpException(StatusCodes
-        .NOT_FOUND, 'There is no team with such id!');
+      throw new HttpException(StatusCodes.NOT_FOUND, 'There is no team with such id!');
     }
     const newMatch = await this.db.create({ ...dataNewMatch });
     return newMatch;

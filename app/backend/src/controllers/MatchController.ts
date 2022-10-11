@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import MatchService from '../services/MatchService';
+import Token from '../helpers/token';
 
 export default class MatchController {
   constructor(private service: MatchService) { }
@@ -12,6 +13,7 @@ export default class MatchController {
 
   async create(req: Request, res: Response, next: NextFunction) {
     try {
+      new Token().validateToken(req.headers.authorization);
       const newMatch = await this.service.create(req.body);
       res.status(StatusCodes.CREATED).json(newMatch);
     } catch (e) {
