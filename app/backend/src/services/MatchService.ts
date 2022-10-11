@@ -44,11 +44,20 @@ export default class MatchService implements IMatchService {
     return newMatch;
   }
 
-  async update(id: number): Promise<Record<string, string>> {
+  async updateStatus(id: number): Promise<Record<string, string>> {
     await this.db.update(
       { inProgress: false },
       { where: { id } },
     );
     return { message: 'Finished' };
+  }
+
+  async updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number):
+  Promise<Record<string, string>> {
+    await this.db.update(
+      { homeTeamGoals, awayTeamGoals },
+      { where: { id } },
+    );
+    return { message: 'Result updated' };
   }
 }

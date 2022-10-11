@@ -22,8 +22,14 @@ export default class MatchController {
     }
   }
 
-  async update(req: Request, res: Response) {
-    const changedOk = await this.service.update(Number(req.params.id));
+  async updateStatus(req: Request, res: Response) {
+    const changedOk = await this.service.updateStatus(Number(req.params.id));
+    res.status(StatusCodes.OK).json(changedOk);
+  }
+
+  async updateResult(req: Request, res: Response) {
+    const changedOk = await this.service
+      .updateResult(Number(req.params.id), req.body.homeTeamGoals, req.body.awayTeamGoals);
     res.status(StatusCodes.OK).json(changedOk);
   }
 }

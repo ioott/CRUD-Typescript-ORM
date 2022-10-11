@@ -11,6 +11,8 @@ router.get('/matches', (req: Request, res: Response) => matchController.findAll(
 router.post('/matches', (req: Request, res: Response, next: NextFunction) =>
   matchController.create(req, res, next));
 router.patch('/matches/:id/finish', (req: Request, res: Response) =>
-  matchController.update(req, res));
+  matchController.updateStatus(req, res));
+router.patch('/matches/:id', (req: Request, res: Response) =>
+  matchController.updateResult(req, res));
 
 export default router;
