@@ -3,7 +3,7 @@ import HttpException from '../middlewares/HttpException';
 import IMatchService from '../interfaces/IMatchService';
 import MatchModel from '../database/models/MatchModel';
 import TeamModel from '../database/models/TeamModel';
-import { calcHomeTeam } from '../utils/leaderboard';
+import { calcHomeTeam, calcAwayTeam } from '../utils/leaderboard';
 
 export default class MatchService implements IMatchService {
   private dbMatch = MatchModel;
@@ -62,7 +62,7 @@ export default class MatchService implements IMatchService {
     return { message: 'Result updated' };
   }
 
-  async leaderboard() {
+  async leaderboardHome() {
     const dataHomeTeams = await this.dbTeam.findAll({
       attributes: { exclude: ['id'] },
       include: [
@@ -72,6 +72,19 @@ export default class MatchService implements IMatchService {
           attributes: ['homeTeamGoals', 'awayTeamGoals'] }] });
 
     const leaderboard = calcHomeTeam(dataHomeTeams);
+    return leaderboard;
+  }
+
+  async leaderboardAway() {
+    const dataAwayTeams = await this.dbTeam.findAll({
+      attributes: { exclude: ['id'] },
+      include: [
+        { model: MatchModel,
+          as: 'teamAway',
+          where: { inProgress: false },
+          attributes: ['homeTeamGoals', 'awayTeamGoals'] }] });
+
+    const leaderboard = calcAwayTeam(dataAwayTeams);
     return leaderboard;
   }
 }

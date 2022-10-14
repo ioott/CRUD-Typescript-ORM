@@ -169,24 +169,15 @@ const calcHomeTeam = (matches: Team[]) => {
   return leaderboard;
 };
 
-const calcAwayTeam = (
-  match: MatchDto,
-  team: TeamDto,
-  totalGames: number,
-) => {
-  // const dataLeaderboard = {
-  //   name: team.teamName,
-  //   totalPoints: calcTotalPointsAwayTeam(match.awayTeamGoals, match.homeTeamGoals),
-  //   totalGames,
-  //   totalVictories: calcTotalVictoriesLossesDraws(match.awayTeamGoals, match.homeTeamGoals),
-  //   totalDraws: calcTotalVictoriesLossesDraws(match.awayTeamGoals, match.homeTeamGoals),
-  //   totalLosses: calcTotalVictoriesLossesDraws(match.awayTeamGoals, match.homeTeamGoals),
-  //   goalsFavor: match.awayTeamGoals,
-  //   goalsOwn: match.homeTeamGoals,
-  //   goalsBalance: calcGoalsBalance(match.awayTeamGoals, match.homeTeamGoals),
-  //   efficiency: calcEfficiency(match.awayTeamGoals, match.homeTeamGoals, totalGames),
-  // };
-  // return newLeaderboard(dataLeaderboard);
+const calcAwayTeam = (matches: Team[]) => {
+  const leaderboard = matches.map((team) => {
+    if (team.teamAway) {
+      return newLeaderboard(team.teamName, team.teamAway);
+    }
+    return {};
+  });
+  orderedLeaderboard(leaderboard as Ileaderboard[]);
+  return leaderboard;
 };
 
 export { calcHomeTeam, calcAwayTeam };

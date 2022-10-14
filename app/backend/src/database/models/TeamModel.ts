@@ -10,6 +10,7 @@ class Team extends Model {
   id!: number;
   teamName!: string;
   teamHome?: Matches[];
+  teamAway?: Matches[];
 }
 
 Team.init({

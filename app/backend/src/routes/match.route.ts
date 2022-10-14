@@ -16,6 +16,7 @@ router.patch('/matches/:id/finish', (req: Request, res: Response) =>
 router.patch('/matches/:id', (req: Request, res: Response) =>
   matchController.updateResult(req, res));
 router.get('/leaderboard/home', (req: Request, res: Response) =>
-  matchController.leaderboard(req, res));
-
+  matchController.leaderboardHome(req, res));
+router.get('/leaderboard/away', (req: Request, res: Response) =>
+  matchController.leaderboardAway(req, res));
 export default router;
