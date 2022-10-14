@@ -32,4 +32,10 @@ export default class MatchController {
       .updateResult(Number(req.params.id), req.body.homeTeamGoals, req.body.awayTeamGoals);
     res.status(StatusCodes.OK).json(changedOk);
   }
+
+  async leaderboard(_req: Request, res: Response) {
+    const leaderboard = await this.service
+      .leaderboard();
+    res.status(StatusCodes.OK).json(leaderboard);
+  }
 }

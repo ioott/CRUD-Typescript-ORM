@@ -8,7 +8,7 @@ dotenv.config();
 const { JWT_SECRET } = process.env;
 
 const jwtDefaultConfig: jwt.SignOptions = {
-  expiresIn: '15d',
+  expiresIn: '365d',
   algorithm: 'HS256',
 };
 

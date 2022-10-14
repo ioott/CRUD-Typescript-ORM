@@ -1,9 +1,15 @@
 import { INTEGER, Model, STRING } from 'sequelize';
 import db from '.';
 
+type Matches = {
+  homeTeamGoals?: number;
+  awayTeamGoals?: number;
+};
+
 class Team extends Model {
   id!: number;
   teamName!: string;
+  teamHome?: Matches[];
 }
 
 Team.init({
@@ -25,3 +31,4 @@ Team.init({
 });
 
 export default Team;
+export { Matches };

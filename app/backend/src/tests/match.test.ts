@@ -100,25 +100,69 @@ describe('testa a rota post /matches', () =>
     expect(chaiHttpResponse.body).to.deep.equal({
       message: 'It is not possible to create a match with two equal teams'
     });
+  });
 
-    it('Verifica que não é possível cadastrar uma partida com um time que não existe na tabela teams. Caso haja uma tentativa, retorna um status 404', async () =>
-    {
-      chaiHttpResponse = await chai
-        .request(app)
-        .post('/matches')
-        .send({
-          'id': 1,
-          'homeTeam': 210,
-          'awayTeam': 16,
-          'homeTeamGoals': 8,
-          'awayTeamGoals': 2,
-          'inProgress': true
-        });
-
-      expect(chaiHttpResponse.status).to.equal(StatusCodes.NOT_FOUND);
-      expect(chaiHttpResponse.body).to.equal({
-        message: 'There is no team with such id!'
+  it('Verifica que não é possível cadastrar uma partida com um time que não existe na tabela teams. Caso haja uma tentativa, retorna um status 404', async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/matches')
+      .send({
+        'id': 1,
+        'homeTeam': 210,
+        'awayTeam': 16,
+        'homeTeamGoals': 8,
+        'awayTeamGoals': 2,
+        'inProgress': true
       });
+
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.NOT_FOUND);
+    expect(chaiHttpResponse.body).to.equal({
+      message: 'There is no team with such id!'
     });
   });
 })
+
+describe('testa a rota patch /matches', () =>
+{
+  let chaiHttpResponse: Response;
+  const matchesMock: MatchDTO = {
+    id: 1,
+    homeTeam: 16,
+    homeTeamGoals: 1,
+    awayTeam: 8,
+    awayTeamGoals: 1,
+    inProgress: false,
+  };
+
+  before(() =>
+  {
+    sinon.stub(MatchModel, 'update')
+      .resolves({ ...matchesMock } as MatchModel[]);
+  });
+  after(() =>
+  {
+    sinon.restore();
+  })
+
+  it('Verifica se é possível alterar o status inProgress de uma partida para false no banco de dados.', async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/id/finish')
+      .send({ 'id': 1 });
+
+      expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
+      expect(chaiHttpResponse.body).to.deep.equal({ message: 'Finished' });
+  });
+
+  it('Verifica se é possível alterar o resultado de uma partida em andamento.', async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .patch('/matches/id')
+      .send({ 'id': 1, 'homeTeamGoals': 3, 'awayTeamGoals': 1 });
+
+      expect(chaiHttpResponse.status).to.equal(StatusCodes.OK);
+  });
+});

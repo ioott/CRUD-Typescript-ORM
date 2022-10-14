@@ -2,24 +2,25 @@ import { StatusCodes } from 'http-status-codes';
 import HttpException from '../middlewares/HttpException';
 import IMatchService from '../interfaces/IMatchService';
 import MatchModel from '../database/models/MatchModel';
-import Team from '../database/models/TeamModel';
-import Token from '../helpers/token';
+import TeamModel from '../database/models/TeamModel';
+import { calcHomeTeam } from '../utils/leaderboard';
 
 export default class MatchService implements IMatchService {
-  private db = MatchModel;
+  private dbMatch = MatchModel;
+  private dbTeam = TeamModel;
 
   async findAll(query: string | undefined): Promise<MatchModel[]> {
     if (!query) {
-      const matches = await this.db.findAll({ include: [
-        { model: Team, as: 'teamHome', attributes: { exclude: ['id'] } },
-        { model: Team, as: 'teamAway', attributes: { exclude: ['id'] } },
+      const matches = await this.dbMatch.findAll({ include: [
+        { model: TeamModel, as: 'teamHome', attributes: { exclude: ['id'] } },
+        { model: TeamModel, as: 'teamAway', attributes: { exclude: ['id'] } },
       ] });
       return matches;
     }
     const queryNumber = query === 'true';
-    const matches = await this.db.findAll({ include: [
-      { model: Team, as: 'teamHome', attributes: { exclude: ['id'] } },
-      { model: Team, as: 'teamAway', attributes: { exclude: ['id'] } },
+    const matches = await this.dbMatch.findAll({ include: [
+      { model: TeamModel, as: 'teamHome', attributes: { exclude: ['id'] } },
+      { model: TeamModel, as: 'teamAway', attributes: { exclude: ['id'] } },
     ],
     where: { inProgress: queryNumber },
     });
@@ -31,21 +32,21 @@ export default class MatchService implements IMatchService {
       throw new HttpException(StatusCodes
         .UNAUTHORIZED, 'It is not possible to create a match with two equal teams');
     }
-    const verifyAwayTeam = await this.db.findOne({
+    const verifyAwayTeam = await this.dbMatch.findOne({
       attributes: ['id'], where: { id: dataNewMatch.awayTeam },
     });
-    const verifyHomeTeam = await this.db.findOne({
+    const verifyHomeTeam = await this.dbMatch.findOne({
       attributes: ['id'], where: { id: dataNewMatch.homeTeam },
     });
     if (!verifyAwayTeam || !verifyHomeTeam) {
       throw new HttpException(StatusCodes.NOT_FOUND, 'There is no team with such id!');
     }
-    const newMatch = await this.db.create({ ...dataNewMatch });
+    const newMatch = await this.dbMatch.create({ ...dataNewMatch });
     return newMatch;
   }
 
   async updateStatus(id: number): Promise<Record<string, string>> {
-    await this.db.update(
+    await this.dbMatch.update(
       { inProgress: false },
       { where: { id } },
     );
@@ -54,10 +55,23 @@ export default class MatchService implements IMatchService {
 
   async updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number):
   Promise<Record<string, string>> {
-    await this.db.update(
+    await this.dbMatch.update(
       { homeTeamGoals, awayTeamGoals },
       { where: { id } },
     );
     return { message: 'Result updated' };
+  }
+
+  async leaderboard() {
+    const dataHomeTeams = await this.dbTeam.findAll({
+      attributes: { exclude: ['id'] },
+      include: [
+        { model: MatchModel,
+          as: 'teamHome',
+          where: { inProgress: false },
+          attributes: ['homeTeamGoals', 'awayTeamGoals'] }] });
+
+    const leaderboard = calcHomeTeam(dataHomeTeams);
+    return leaderboard;
   }
 }
