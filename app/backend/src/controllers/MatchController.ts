@@ -44,4 +44,10 @@ export default class MatchController {
       .leaderboardAway();
     res.status(StatusCodes.OK).json(leaderboard);
   }
+
+  async leaderboard(_req: Request, res: Response) {
+    const leaderboard = await this.service
+      .leaderboard();
+    res.status(StatusCodes.OK).json(leaderboard);
+  }
 }

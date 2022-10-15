@@ -1,28 +1,7 @@
-import TeamDto from '../interfaces/teamDTO';
-import MatchDto from '../interfaces/matchDTO';
 import Team, { Matches } from '../database/models/TeamModel';
 import Ileaderboard from '../interfaces/Ileaderboard';
 
-// const calcTotalPointsAwayTeam = (
-//   awayTeamGoals: number,
-//   homeTeamGoals: number,
-// ) => {
-//   if (!awayTeamGoals || !homeTeamGoals) {
-//     return undefined;
-//   }
-//   if (awayTeamGoals === homeTeamGoals) {
-//     let totalPoints = 0;
-//     totalPoints += 1;
-//     return totalPoints;
-//   }
-//   if (awayTeamGoals > homeTeamGoals) {
-//     let totalPoints = 0;
-//     totalPoints += 3;
-//     return totalPoints;
-//   }
-// };
-
-const calcTotalPoints = (matches: Matches[]) => {
+const calcTotalPointsHome = (matches: Matches[]) => {
   let points = 0;
   const totalPoints = matches.map((match) => {
     if (match.awayTeamGoals === undefined || match.homeTeamGoals === undefined) {
@@ -39,7 +18,7 @@ const calcTotalPoints = (matches: Matches[]) => {
   return totalPoints[totalPoints.length - 1];
 };
 
-const calcTotalVictories = (matches: Matches[]) => {
+const calcTotalVictoriesHome = (matches: Matches[]) => {
   let totalVictories = 0;
   matches.map((match) => {
     if (match.awayTeamGoals === undefined || match.homeTeamGoals === undefined) {
@@ -67,7 +46,7 @@ const calcTotalDraws = (matches: Matches[]) => {
   return totalDraws;
 };
 
-const calcTotalLosses = (matches: Matches[]) => {
+const calcTotalLossesHome = (matches: Matches[]) => {
   let totalLosses = 0;
   matches.map((match) => {
     if (match.awayTeamGoals === undefined || match.homeTeamGoals === undefined) {
@@ -81,7 +60,7 @@ const calcTotalLosses = (matches: Matches[]) => {
   return totalLosses;
 };
 
-const calcGoalsFavor = (matches: Matches[]) => {
+const calcGoalsFavorHome = (matches: Matches[]) => {
   let goalsFavor = 0;
   matches.map((match) => {
     if (match.awayTeamGoals === undefined || match.homeTeamGoals === undefined) {
@@ -93,7 +72,7 @@ const calcGoalsFavor = (matches: Matches[]) => {
   return goalsFavor;
 };
 
-const calcGoalsOwn = (matches: Matches[]) => {
+const calcGoalsOwnHome = (matches: Matches[]) => {
   let goalsOwn = 0;
   matches.map((match) => {
     if (match.awayTeamGoals === undefined || match.homeTeamGoals === undefined) {
@@ -105,23 +84,23 @@ const calcGoalsOwn = (matches: Matches[]) => {
   return goalsOwn;
 };
 
-const calcGoalsBalance = (matches: Matches[]) => {
+const calcGoalsBalanceHome = (matches: Matches[]) => {
   let goalsBalance = 0;
-  const goalsFavor = calcGoalsFavor(matches);
-  const goalsOwn = calcGoalsOwn(matches);
+  const goalsFavorHome = calcGoalsFavorHome(matches);
+  const goalsOwnHome = calcGoalsOwnHome(matches);
   matches.map((match) => {
     if (match.awayTeamGoals === undefined || match.homeTeamGoals === undefined) {
       return undefined;
     }
-    goalsBalance = goalsFavor - goalsOwn;
+    goalsBalance = goalsFavorHome - goalsOwnHome;
     return goalsBalance;
   });
   return goalsBalance;
 };
 
-const calcEfficiency = (matches: Matches[]) => {
+const calcEfficiencyHome = (matches: Matches[]) => {
   let efficiency = 0;
-  const totalPoints = calcTotalPoints(matches);
+  const totalPoints = calcTotalPointsHome(matches);
   matches.map((match) => {
     if (match.awayTeamGoals === undefined || match.homeTeamGoals === undefined) {
       return undefined;
@@ -132,18 +111,18 @@ const calcEfficiency = (matches: Matches[]) => {
   return efficiency;
 };
 
-const newLeaderboard = (name: string, match: Matches[]) => {
+const newLeaderboardHome = (name: string, match: Matches[]) => {
   const data = {
     name,
-    totalPoints: calcTotalPoints(match),
+    totalPoints: calcTotalPointsHome(match),
     totalGames: match.length,
-    totalVictories: calcTotalVictories(match),
+    totalVictories: calcTotalVictoriesHome(match),
     totalDraws: calcTotalDraws(match),
-    totalLosses: calcTotalLosses(match),
-    goalsFavor: calcGoalsFavor(match),
-    goalsOwn: calcGoalsOwn(match),
-    goalsBalance: calcGoalsBalance(match),
-    efficiency: calcEfficiency(match),
+    totalLosses: calcTotalLossesHome(match),
+    goalsFavor: calcGoalsFavorHome(match),
+    goalsOwn: calcGoalsOwnHome(match),
+    goalsBalance: calcGoalsBalanceHome(match),
+    efficiency: calcEfficiencyHome(match),
   };
   return data;
 };
@@ -161,7 +140,7 @@ const orderedLeaderboard = (leaderboard: Ileaderboard[]) => {
 const calcHomeTeam = (matches: Team[]) => {
   const leaderboard = matches.map((team) => {
     if (team.teamHome) {
-      return newLeaderboard(team.teamName, team.teamHome);
+      return newLeaderboardHome(team.teamName, team.teamHome);
     }
     return {};
   });
@@ -169,15 +148,4 @@ const calcHomeTeam = (matches: Team[]) => {
   return leaderboard;
 };
 
-const calcAwayTeam = (matches: Team[]) => {
-  const leaderboard = matches.map((team) => {
-    if (team.teamAway) {
-      return newLeaderboard(team.teamName, team.teamAway);
-    }
-    return {};
-  });
-  orderedLeaderboard(leaderboard as Ileaderboard[]);
-  return leaderboard;
-};
-
-export { calcHomeTeam, calcAwayTeam };
+export default calcHomeTeam;

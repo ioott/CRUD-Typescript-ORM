@@ -19,4 +19,7 @@ router.get('/leaderboard/home', (req: Request, res: Response) =>
   matchController.leaderboardHome(req, res));
 router.get('/leaderboard/away', (req: Request, res: Response) =>
   matchController.leaderboardAway(req, res));
+router.get('/leaderboard', (req: Request, res: Response) =>
+  matchController.leaderboard(req, res));
+
 export default router;
