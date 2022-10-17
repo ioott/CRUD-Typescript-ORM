@@ -8,7 +8,6 @@ import MatchModel from '../database/models/MatchModel';
 import { Response } from 'superagent';
 import MatchDTO from '../interfaces/matchDTO';
 import LoginDto from '../interfaces/loginDTO';
-import UserModel from '../database/models/UserModel';
 import * as jwt from 'jsonwebtoken';
 
 chai.use(chaiHttp);
