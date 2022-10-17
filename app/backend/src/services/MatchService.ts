@@ -3,8 +3,9 @@ import HttpException from '../middlewares/HttpException';
 import IMatchService from '../interfaces/IMatchService';
 import MatchModel from '../database/models/MatchModel';
 import TeamModel from '../database/models/TeamModel';
-import calcHomeTeam from '../utils/leaderboardHome';
-import calcAwayTeam from '../utils/leaderboardAway';
+import { calcHomeTeam } from '../utils/leaderboardHome';
+import { calcAwayTeam } from '../utils/leaderboardAway';
+import calcGeneralTeam from '../utils/leaderboardGeneral';
 
 export default class MatchService implements IMatchService {
   private dbMatch = MatchModel;
@@ -100,24 +101,25 @@ export default class MatchService implements IMatchService {
   }
 
   async leaderboard() {
-    const dataHomeTeams = await this.dbTeam.findAll({
+    const dataTeams = await this.dbTeam.findAll({
       attributes: { exclude: ['id'] },
-      include: [{ model: MatchModel,
-        as: 'teamHome',
-        where: { inProgress: false },
-        attributes: ['homeTeamGoals', 'awayTeamGoals'] }],
+      include: [
+        {
+          model: MatchModel,
+          as: 'teamHome',
+          where: { inProgress: false },
+          attributes: ['homeTeamGoals', 'awayTeamGoals'],
+        },
+        {
+          model: MatchModel,
+          as: 'teamAway',
+          where: { inProgress: false },
+          attributes: ['homeTeamGoals', 'awayTeamGoals'],
+        }],
     });
 
-    const dataAwayTeams = await this.dbTeam.findAll({
-      attributes: { exclude: ['id'] },
-      include: [{ model: MatchModel,
-        as: 'teamAway',
-        where: { inProgress: false },
-        attributes: ['homeTeamGoals', 'awayTeamGoals'] }],
-    });
+    const leaderboard = calcGeneralTeam(dataTeams);
 
-    const leaderboardAway = calcAwayTeam(dataAwayTeams);
-    const leaderboardHome = calcHomeTeam(dataHomeTeams);
-    return leaderboardHome.concat(leaderboardAway);
+    return leaderboard;
   }
 }

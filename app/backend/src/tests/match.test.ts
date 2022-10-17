@@ -7,6 +7,9 @@ import { app } from '../app';
 import MatchModel from '../database/models/MatchModel';
 import { Response } from 'superagent';
 import MatchDTO from '../interfaces/matchDTO';
+import LoginDto from '../interfaces/loginDTO';
+import UserModel from '../database/models/UserModel';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 chai.use(chaiHttp);
 
@@ -45,6 +48,10 @@ describe('testa a rota get /matches', () =>
 describe('testa a rota post /matches', () =>
 {
   let chaiHttpResponse: Response;
+  const userMock: LoginDto = {
+    email: 'admin@admin.com',
+    password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
+  };
   const matchesMock: MatchDTO = {
     id: 1,
     homeTeam: 16,
@@ -56,6 +63,10 @@ describe('testa a rota post /matches', () =>
 
   before(() =>
   {
+    sinon.stub(UserModel, 'findOne')
+      .resolves({ ...userMock } as UserModel);
+    sinon.stub(jwt, 'verify')
+      .returns(true)
     sinon.stub(MatchModel, 'create')
       .resolves({ ...matchesMock } as MatchModel);
   });
@@ -66,6 +77,14 @@ describe('testa a rota post /matches', () =>
 
   it('Verifica se é possível cadastrar nova partida em andamento, retorna os dados da partida e um status 201', async () =>
   {
+     chaiHttpResponse = await chai
+      .request(app)
+      .post('/login')
+      .send({
+        'email': 'admin@admin.com',
+        "password": "secret_admin"
+      });
+
     chaiHttpResponse = await chai
       .request(app)
       .post('/matches')
@@ -126,24 +145,6 @@ describe('testa a rota post /matches', () =>
 describe('testa a rota patch /matches', () =>
 {
   let chaiHttpResponse: Response;
-  const matchesMock: MatchDTO = {
-    id: 1,
-    homeTeam: 16,
-    homeTeamGoals: 1,
-    awayTeam: 8,
-    awayTeamGoals: 1,
-    inProgress: false,
-  };
-
-  before(() =>
-  {
-    sinon.stub(MatchModel, 'update')
-      .resolves({ ...matchesMock } as MatchModel[]);
-  });
-  after(() =>
-  {
-    sinon.restore();
-  })
 
   it('Verifica se é possível alterar o status inProgress de uma partida para false no banco de dados.', async () =>
   {

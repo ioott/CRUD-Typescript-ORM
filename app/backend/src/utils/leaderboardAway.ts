@@ -148,4 +148,12 @@ const calcAwayTeam = (matches: Team[]) => {
   return leaderboard;
 };
 
-export default calcAwayTeam;
+export {
+  calcAwayTeam,
+  calcTotalPointsAway,
+  calcTotalVictoriesAway,
+  calcTotalLossesAway,
+  calcGoalsFavorAway,
+  calcGoalsOwnAway,
+  calcGoalsBalanceAway,
+};
