@@ -9,7 +9,7 @@ import { Response } from 'superagent';
 import MatchDTO from '../interfaces/matchDTO';
 import LoginDto from '../interfaces/loginDTO';
 import UserModel from '../database/models/UserModel';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 chai.use(chaiHttp);
 
@@ -49,56 +49,48 @@ describe('testa a rota post /matches', () =>
 {
   let chaiHttpResponse: Response;
   const userMock: LoginDto = {
-    email: 'admin@admin.com',
-    password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
+    'email': 'admin@admin.com',
+    'password': 'secret_admin',
   };
   const matchesMock: MatchDTO = {
     id: 1,
     homeTeam: 16,
-    homeTeamGoals: 1,
     awayTeam: 8,
-    awayTeamGoals: 1,
-    inProgress: false,
+    homeTeamGoals: 2,
+    awayTeamGoals: 2,
+    inProgress: true,
   };
 
-  before(() =>
+  beforeEach( async() =>
   {
-    sinon.stub(UserModel, 'findOne')
-      .resolves({ ...userMock } as UserModel);
     sinon.stub(jwt, 'verify')
-      .returns(true)
+      .returns({ email:'admin@admin.com' } as any);
+
     sinon.stub(MatchModel, 'create')
       .resolves({ ...matchesMock } as MatchModel);
+
   });
-  after(() =>
+  afterEach(() =>
   {
     sinon.restore();
   })
 
   it('Verifica se é possível cadastrar nova partida em andamento, retorna os dados da partida e um status 201', async () =>
   {
-     chaiHttpResponse = await chai
-      .request(app)
-      .post('/login')
-      .send({
-        'email': 'admin@admin.com',
-        "password": "secret_admin"
-      });
-
     chaiHttpResponse = await chai
       .request(app)
       .post('/matches')
+      .set('Authorization', 'token')
       .send({
-        'id': 1,
         'homeTeam': 16,
-        'awayTeam': 2,
-        'homeTeamGoals': 8,
+        'awayTeam': 8,
+        'homeTeamGoals': 2,
         'awayTeamGoals': 2,
         'inProgress': true
       });
 
     expect(chaiHttpResponse.status).to.equal(StatusCodes.CREATED);
-    expect(chaiHttpResponse.body).to.deep.equal(matchesMock);
+    expect(chaiHttpResponse.body).to.deep.equal({ ...matchesMock });
   });
 
   it('Verifica que não é possível cadastrar uma partida com times iguais. Caso haja uma tentativa, retorna um status 401', async () =>
@@ -106,8 +98,8 @@ describe('testa a rota post /matches', () =>
     chaiHttpResponse = await chai
       .request(app)
       .post('/matches')
+      .set('Authorization', 'token')
       .send({
-        'id': 1,
         'homeTeam': 16,
         'awayTeam': 16,
         'homeTeamGoals': 8,
@@ -126,8 +118,8 @@ describe('testa a rota post /matches', () =>
     chaiHttpResponse = await chai
       .request(app)
       .post('/matches')
+      .set('Authorization', 'token')
       .send({
-        'id': 1,
         'homeTeam': 210,
         'awayTeam': 16,
         'homeTeamGoals': 8,
@@ -136,8 +128,28 @@ describe('testa a rota post /matches', () =>
       });
 
     expect(chaiHttpResponse.status).to.equal(StatusCodes.NOT_FOUND);
-    expect(chaiHttpResponse.body).to.equal({
+    expect(chaiHttpResponse.body).to.deep.equal({
       message: 'There is no team with such id!'
+    });
+  });
+
+  it('Verifica que não é possível inserir uma partida sem um token válido', async () =>
+  {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/matches')
+      .set('Authorization', '')
+      .send({
+        'homeTeam': 210,
+        'awayTeam': 16,
+        'homeTeamGoals': 8,
+        'awayTeamGoals': 2,
+        'inProgress': true
+      });
+
+    expect(chaiHttpResponse.status).to.equal(StatusCodes.UNAUTHORIZED);
+    expect(chaiHttpResponse.body).to.deep.equal({
+      message: 'Token must be a valid token'
     });
   });
 })

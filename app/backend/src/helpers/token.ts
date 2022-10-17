@@ -27,11 +27,12 @@ class Token {
   }
 
   public validateToken(token: string | undefined) {
+    console.log('token', token);
     if (!JWT_SECRET) {
       throw new HttpException(StatusCodes.INTERNAL_SERVER_ERROR, 'JWT_SECRET doesn`t exist');
     }
     if (!token) {
-      throw new HttpException(StatusCodes.UNAUTHORIZED, 'invalid token');
+      throw new HttpException(StatusCodes.UNAUTHORIZED, 'Token must be a valid token');
     }
     try {
       const payload = jwt.verify(token, JWT_SECRET, this.jwtConfig);
