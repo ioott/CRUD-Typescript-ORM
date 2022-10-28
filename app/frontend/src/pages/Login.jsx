@@ -57,7 +57,7 @@ const Login = () => {
               value={ email }
               onChange={ ({ target: { value } }) => setEmail(value) }
               data-testid="login__login_input"
-              placeholder="Login"
+              placeholder="Login (digite: user@user.com)"
             />
           </label>
           <label htmlFor="password-input">
@@ -66,7 +66,7 @@ const Login = () => {
               value={ password }
               onChange={ ({ target: { value } }) => setPassword(value) }
               data-testid="login__password_input"
-              placeholder="Senha"
+              placeholder="Senha (digite: secret_user)"
             />
           </label>
           {
