@@ -11,7 +11,7 @@
 }
 
 .games-handlers form label {
-  color: #3d495c;
+  color: #002c33;
   display: flex;
   flex-direction: column;
   font-family: Verdana , Tahoma , sans-serif;
@@ -43,8 +43,8 @@
 
 .games-handlers form button {
   align-self: flex-end;
-  background: #003be5;
-  border: 1px solid #003be5;
+  background: #002c33;
+  border: 1px solid #002c33;
   border-radius: 8px;
   color: white;
   cursor: pointer;
@@ -63,7 +63,7 @@
 }
 
 .games-handlers form button:hover {
-  background: #002799;
+  background: #2fc18c;
 }
 
 .add-new-game-button {
