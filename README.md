@@ -2,7 +2,7 @@
 
 <img alt="Typescript" src="https://img.shields.io/badge/-Typescript-black?style=flat-square&logo=typescript">  <img alt="ORM" src="https://img.shields.io/badge/-ORM-black?style=flat-square&logo=ORM">  <img alt="JWT" src="https://img.shields.io/badge/-JWT-black?style=flat-square&logo=jwt">   <img alt="Sequelize" src="https://img.shields.io/badge/-Sequelize-black?style=flat-square&logo=sequelize">   <img alt="Mocha" src="https://img.shields.io/badge/-Mocha-black?style=flat-square&logo=mocha">   <img alt="Chai" src="https://img.shields.io/badge/-Chai-black?style=flat-square&logo=chai">   <img alt="Sinon" src="https://img.shields.io/badge/-Sinon-black?style=flat-square&logo=sinon">
   
-Acesse aqui: https://gerenciamento-de-campeonato-de-futebol.up.railway.app/login
+ Acesse aqui: [ Site do Projeto](https://gerenciamento-de-campeonato-de-futebol.up.railway.app/login)
 
 Este projeto cria um CRUD para gerenciamento de um campeonato de futebol. O desafio era implementar o backend, desenvolvendo uma API REST em Typescript e Sequelize.
 
