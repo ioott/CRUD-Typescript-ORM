@@ -57,7 +57,7 @@ const Login = () => {
               value={ email }
               onChange={ ({ target: { value } }) => setEmail(value) }
               data-testid="login__login_input"
-              placeholder="Login (digite: user@user.com)"
+              placeholder="Login"
             />
           </label>
           <label htmlFor="password-input">
@@ -66,7 +66,7 @@ const Login = () => {
               value={ password }
               onChange={ ({ target: { value } }) => setPassword(value) }
               data-testid="login__password_input"
-              placeholder="Senha (digite: secret_user)"
+              placeholder="Senha"
             />
           </label>
           {
@@ -90,6 +90,9 @@ const Login = () => {
           </button>
         </form>
       </section>
+      <footer>
+        Por ser um site feito para portifólio, seguem os dados de acesso: <i>usuário: user@user.com, senha: secret_user</i>
+      </footer>
     </>
   );
 };
