@@ -88,10 +88,10 @@ const Login = () => {
           >
             Entrar
           </button>
+          <p>
+            Por ser um site feito para portifólio, seguem os dados de acesso: <i>usuário: user@user.com, senha: secret_user</i>
+          </p>
         </form>
-        <p>
-          Por ser um site feito para portifólio, seguem os dados de acesso: <i>usuário: user@user.com, senha: secret_user</i>
-        </p>
       </section>
     </>
   );
