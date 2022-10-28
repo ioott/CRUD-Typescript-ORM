@@ -46,7 +46,7 @@ const Login = () => {
         FirstNavigationLink={ LeaderboardBtn }
         SecondNavegationLink={ MatchesBtn }
       />
-      <p> <a href="https://github.com/ioott/FullStack-CRUD-Typescript-ORM-TDD-POO">Link para o código</a></p>
+      <p className="link-codigo"> <a href="https://github.com/ioott/FullStack-CRUD-Typescript-ORM-TDD-POO">Link para o código</a></p>
       <section className="user-login-area">
         <img src={ positiveLogo } alt="Trybe Futebol Clube Negative Logo" />
         <form>
