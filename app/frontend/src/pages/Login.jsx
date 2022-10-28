@@ -48,6 +48,7 @@ const Login = () => {
       />
       <section className="user-login-area">
         <img src={ positiveLogo } alt="Trybe Futebol Clube Negative Logo" />
+        <p> <a href="https://github.com/ioott/FullStack-CRUD-Typescript-ORM-TDD-POO">Link para o código</a></p>
         <form>
           <h1>Área do usuário</h1>
           <label htmlFor="email-input">
